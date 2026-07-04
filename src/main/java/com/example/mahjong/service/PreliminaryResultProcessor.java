@@ -6,28 +6,38 @@ import com.example.mahjong.model.PlayerResult;
 import com.example.mahjong.model.Round;
 import com.example.mahjong.model.RoundType;
 import com.example.mahjong.model.TableResult;
+import com.example.mahjong.model.TournamentState;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 處理預賽 7 桌結果，產生勝部R1與敗部R1。
  */
-public class PreliminaryResultProcessor {
+public class PreliminaryResultProcessor implements RoundProcessor<PreliminaryResultProcessor.Result> {
 
     private final TableGenerator tableGenerator;
+    private final PromotionService promotionService;
+
+    public PreliminaryResultProcessor(TableGenerator tableGenerator, PromotionService promotionService) {
+        this.tableGenerator = tableGenerator;
+        this.promotionService = promotionService;
+    }
 
     public PreliminaryResultProcessor(TableGenerator tableGenerator) {
-        this.tableGenerator = tableGenerator;
+        this(tableGenerator, new PromotionService());
     }
 
     public PreliminaryResultProcessor() {
         this(new TableGenerator());
     }
 
+    @Override
+    public TournamentState state() {
+        return TournamentState.PRELIMINARY;
+    }
+
+    @Override
     public Result process(List<TableResult> results) {
         if (results.size() != 7) {
             throw new IllegalArgumentException("預賽結果必須剛好 7 桌");
@@ -41,17 +51,19 @@ public class PreliminaryResultProcessor {
                 throw new IllegalArgumentException("只能處理預賽結果");
             }
 
-            winners.addAll(toPlayers(result.topTwo()));
+            winners.addAll(promotionService.topTwo(result));
             loserCandidates.addAll(result.bottomTwo());
         }
 
-        loserCandidates.sort(Comparator.comparingInt(PlayerResult::getScore).reversed());
-
-        List<Player> transferred = toPlayers(loserCandidates.subList(0, 2));
-        List<Player> losers = toPlayers(loserCandidates.subList(2, loserCandidates.size()));
+        List<PlayerResult> transferredResults = promotionService.highestScore(loserCandidates, 2);
+        loserCandidates.removeAll(transferredResults);
+        List<Player> transferred = promotionService.toPlayers(transferredResults);
+        List<Player> losers = promotionService.toPlayers(loserCandidates);
 
         winners.addAll(transferred);
-        ensureUniquePlayers(winners, losers);
+        List<Player> promotedPlayers = new ArrayList<>(winners);
+        promotedPlayers.addAll(losers);
+        promotionService.ensureUniquePlayers(promotedPlayers, "預賽結果含有重複玩家");
 
         return new Result(
                 winners,
@@ -60,28 +72,6 @@ public class PreliminaryResultProcessor {
                 tableGenerator.generate(new Round(RoundType.WINNER, 1), winners),
                 tableGenerator.generate(new Round(RoundType.LOSER, 1), losers)
         );
-    }
-
-    private List<Player> toPlayers(List<PlayerResult> results) {
-        List<Player> players = new ArrayList<>();
-        for (PlayerResult result : results) {
-            players.add(result.getPlayer());
-        }
-        return players;
-    }
-
-    private void ensureUniquePlayers(List<Player> winners, List<Player> losers) {
-        Set<String> ids = new HashSet<>();
-        for (Player player : winners) {
-            if (!ids.add(player.getDiscordId())) {
-                throw new IllegalArgumentException("預賽結果含有重複玩家");
-            }
-        }
-        for (Player player : losers) {
-            if (!ids.add(player.getDiscordId())) {
-                throw new IllegalArgumentException("預賽結果含有重複玩家");
-            }
-        }
     }
 
     public static class Result {

@@ -15,12 +15,22 @@ public class Tournament {
 
     /** 參加這場賽事的玩家。 */
     private final List<Player> players;
+    private TournamentState state;
 
     public Tournament(List<Player> players) {
         this.players = new ArrayList<>(players);
+        this.state = TournamentState.PRELIMINARY;
     }
 
     public List<Player> getPlayers() {
         return new ArrayList<>(players);
+    }
+
+    public TournamentState getState() {
+        return state;
+    }
+
+    public void advanceTo(TournamentState state) {
+        this.state = state;
     }
 }
