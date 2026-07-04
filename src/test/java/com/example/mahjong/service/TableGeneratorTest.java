@@ -7,11 +7,12 @@ import com.example.mahjong.model.RoundType;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TableGeneratorTest {
 
@@ -34,8 +35,10 @@ class TableGeneratorTest {
             assignedPlayers.addAll(table.getPlayers());
         }
 
-        assertTrue(assignedPlayers.containsAll(players));
+        Set<Player> uniqueAssignedPlayers = new HashSet<>(assignedPlayers);
         assertEquals(players.size(), assignedPlayers.size());
+        assertEquals(players.size(), uniqueAssignedPlayers.size());
+        assertEquals(new HashSet<>(players), uniqueAssignedPlayers);
     }
 
     @Test
