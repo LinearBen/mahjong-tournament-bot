@@ -1,18 +1,23 @@
 plugins {
+    // 使用 Java 專案需要的基本 Gradle 外掛。
     id 'java'
+
+    // application 外掛可以讓 Gradle 知道要從哪個 main class 啟動程式。
     id 'application'
 }
 
+// 專案發布或打包時使用的基本識別資訊。
 group = 'com.example'
 version = '1.0.0'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
+    // 套件下載來源統一寫在 settings.gradle，避免多個檔案重複設定。
+    // Lombok 只在編譯時幫我們產生 getter / constructor 等樣板程式碼。
+    compileOnly 'org.projectlombok:lombok:1.18.46'
+    annotationProcessor 'org.projectlombok:lombok:1.18.46'
 }
 
 application {
+    // Gradle run 指令會執行這個 class 的 main 方法。
     mainClass = 'com.example.mahjong.Main'
 }

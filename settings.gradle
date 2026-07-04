@@ -1,15 +1,18 @@
 pluginManagement {
     repositories {
+        // Gradle 外掛會從這些來源尋找。
         gradlePluginPortal()
         mavenCentral()
     }
 }
 
 dependencyResolutionManagement {
+    // 統一要求所有依賴都從 settings.gradle 宣告的 repositories 下載。
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         mavenCentral()
     }
 }
 
+// Gradle 專案名稱，通常也會顯示在 IDE 或建置輸出中。
 rootProject.name = 'mahjong-tournament-bot'
