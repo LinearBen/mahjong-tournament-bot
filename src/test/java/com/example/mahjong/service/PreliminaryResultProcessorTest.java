@@ -52,6 +52,24 @@ class PreliminaryResultProcessorTest {
         assertThrows(IllegalArgumentException.class, () -> processor.process(results));
     }
 
+    @Test
+    void rejectsPreliminaryResultsThatAreNotSevenTables() {
+        PreliminaryResultProcessor processor = new PreliminaryResultProcessor();
+        List<TableResult> results = preliminaryResults();
+        results.remove(6);
+
+        assertThrows(IllegalArgumentException.class, () -> processor.process(results));
+    }
+
+    @Test
+    void rejectsDuplicatePlayers() {
+        PreliminaryResultProcessor processor = new PreliminaryResultProcessor();
+        List<TableResult> results = preliminaryResults();
+        results.set(1, tableResult(new Round(RoundType.PRELIMINARY, 0), "B", 1));
+
+        assertThrows(IllegalArgumentException.class, () -> processor.process(results));
+    }
+
     private List<TableResult> preliminaryResults() {
         List<TableResult> results = new ArrayList<>();
         Round round = new Round(RoundType.PRELIMINARY, 0);
