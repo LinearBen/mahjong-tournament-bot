@@ -1,0 +1,18 @@
+# Gradle build output
+build/
+out/
+
+# Gradle local cache
+.gradle/
+
+# Java compiled files
+*.class
+
+# IDE / editor local settings
+.idea/
+*.iml
+.vscode/
+
+# OS local files
+.DS_Store
+Thumbs.db
