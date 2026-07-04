@@ -16,3 +16,6 @@ out/
 # OS local files
 .DS_Store
 Thumbs.db
+
+# Local project memory
+專案記憶.md
