@@ -17,7 +17,7 @@ import java.util.List;
 public class MatchTable {
 
     /** 這桌屬於哪個輪次，例如預賽、勝部R1、敗部R2。 */
-    private final RoundKey roundKey;
+    private final Round roundKey;
 
     /** 桌號，規則中使用 A、B、C、D... 這種大寫英文字母。 */
     private final String tableCode;
@@ -25,7 +25,7 @@ public class MatchTable {
     /** 這桌的 4 位玩家。 */
     private final List<Player> players;
 
-    public MatchTable(RoundKey roundKey, String tableCode, List<Player> players) {
+    public MatchTable(Round roundKey, String tableCode, List<Player> players) {
         if (players.size() != 4) {
             throw new IllegalArgumentException("一桌必須剛好 4 人");
         }

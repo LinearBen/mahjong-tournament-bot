@@ -7,17 +7,17 @@ import lombok.Getter;
  * 指定一個明確的比賽輪次。
  *
  * 範例：
- * new RoundKey(RoundType.PRELIMINARY, 0) 代表「預賽」
- * new RoundKey(RoundType.WINNER, 2)      代表「勝部R2」
- * new RoundKey(RoundType.LOSER, 4)       代表「敗部R4」
- * new RoundKey(RoundType.FINAL, 0)       代表「總決賽」
+ * new Round(RoundType.PRELIMINARY, 0) 代表「預賽」
+ * new Round(RoundType.WINNER, 2)      代表「勝部R2」
+ * new Round(RoundType.LOSER, 4)       代表「敗部R4」
+ * new Round(RoundType.FINAL, 0)       代表「總決賽」
  *
  * 這種設計比「每一輪都做成 enum」更適合寫賽制流程：
  * 勝部R1 到 勝部R2 只要把 roundNumber + 1，不需要額外寫 mapping。
  */
 @Getter
 @AllArgsConstructor
-public class RoundKey {
+public class Round {
 
     /** 比賽輪次類型，例如預賽、勝部、敗部、總決賽。 */
     private final RoundType type;
